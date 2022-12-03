@@ -11,10 +11,10 @@
     "test:unit": "npx mocha src/test/unit/**.mjs",
     "test:e2e": "npx mocha src/test/e2e/*.test.mjs --timeout 5000 --inspect-brk",
     "build": "npx rimraf dist .parcel-cache && npx parcel build src/app/index.html",
-    "postinstall": "browser-driver-manager install chromedriver"
+    "install:chromedriver": "browser-driver-manager install chromedriver"
   },
   "engines": {
-    "node": "19"
+    "node": "18"
   },
   "browserslist": [
     "last 2 chrome versions"
