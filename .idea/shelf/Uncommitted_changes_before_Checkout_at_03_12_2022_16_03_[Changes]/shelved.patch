@@ -1,0 +1,130 @@
+Index: src/app/store.remote.await.mjs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/**\r\n * Dieser Store funktioniert mit dem Java Spark Server: https://github.com/ibwgr/todomvc-java-server\r\n * Es gibt keine Login Funktionalität.\r\n *\r\n * Verwendet wird async await mit try / catch (nicht Promises).\r\n */\r\nexport default class Store{\r\n    constructor(name){\r\n      this.serverUrl = process.env.API_SERVER_URL != null ? process.env.API_SERVER_URL : 'http://localhost:4567'\r\n      this.name = name\r\n    }\r\n\r\n    async add(item){\r\n        let headers = new Headers({\r\n            'Content-Type': 'application/json',\r\n            'Accept': 'application/json'\r\n        })\r\n        const resp = await fetch(this.serverUrl + '/todo/items', {\r\n            method: 'POST',\r\n            headers,\r\n            body: JSON.stringify(item)\r\n        })\r\n\r\n        if(resp.ok === true){\r\n            return resp.json()\r\n        }else{\r\n            throw resp\r\n        }\r\n    }\r\n\r\n    async remove(id) {\r\n      let headers = new Headers({\r\n        'Content-Type': 'application/json',\r\n        'Accept': 'application/json'\r\n      })\r\n      const resp = await fetch(this.serverUrl + '/todo/items/' + id, {\r\n        method: 'DELETE',\r\n        headers,\r\n        credentials: 'include'\r\n      })\r\n\r\n      if (resp.ok === true) {\r\n        return resp.json()\r\n      } else {\r\n        throw resp\r\n      }\r\n    }\r\n\r\n    async all(){\r\n        let headers = new Headers({\r\n            'Accept': 'application/json'\r\n        })\r\n        const resp = await fetch(this.serverUrl + '/todo/items', {\r\n            headers,\r\n        })\r\n\r\n        if(resp.ok === true){\r\n            return resp.json()\r\n        }else{\r\n            throw resp\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/app/store.remote.await.mjs b/src/app/store.remote.await.mjs
+--- a/src/app/store.remote.await.mjs	(revision 809454e523eb9df4e27c422f15beabf5bba17f39)
++++ b/src/app/store.remote.await.mjs	(date 1668784426198)
+@@ -6,7 +6,7 @@
+  */
+ export default class Store{
+     constructor(name){
+-      this.serverUrl = process.env.API_SERVER_URL != null ? process.env.API_SERVER_URL : 'http://localhost:4567'
++      this.serverUrl = process.env.API_SERVER_URL != null ? process.env.API_SERVER_URL : 'http://localhost:4567'//3100'//4567'
+       this.name = name
+     }
+ 
+Index: package.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\r\n  \"name\": \"todomvc-es6-custom\",\r\n  \"version\": \"1.0.0\",\r\n  \"description\": \"Simple TodoMVC Application with vanilla ES6\",\r\n  \"author\": \"Ueli Kunz <kunz@ideadapt.net>\",\r\n  \"license\": \"MIT\",\r\n  \"scripts\": {\r\n    \"dev\": \"npx rimraf .parcel-cache && npx parcel src/app/index.html\",\r\n    \"start:ci\": \"npm run build && npx http-server dist --port 1234\",\r\n    \"test\": \"npm run test:unit && npm run test:e2e\",\r\n    \"test:unit\": \"npx mocha src/test/unit/**.mjs\",\r\n    \"test:e2e\": \"npx mocha src/test/e2e/*.test.mjs --timeout 5000\",\r\n    \"build\": \"npx rimraf dist .parcel-cache && npx parcel build src/app/index.html\",\r\n    \"postinstall\": \"browser-driver-manager install chromedriver\"\r\n  },\r\n  \"engines\": {\r\n    \"node\": \"19\"\r\n  },\r\n  \"browserslist\": [\r\n    \"last 2 chrome versions\"\r\n  ],\r\n  \"devDependencies\": {\r\n    \"chai\": \"4.2.0\",\r\n    \"chai-as-promised\": \"7.1.1\",\r\n    \"eslint\": \"6.7.2\",\r\n    \"mocha\": \"^10.1.0\",\r\n    \"selenium-webdriver\": \"4.1.1\",\r\n    \"sinon\": \"7.5.0\"\r\n  },\r\n  \"dependencies\": {\r\n    \"browser-driver-manager\": \"^1.0.4\",\r\n    \"chromedriver\": \"^107.0.3\",\r\n    \"he\": \"^1.2.0\",\r\n    \"http-server\": \"^14.1.1\",\r\n    \"parcel\": \"2.7.0\",\r\n    \"rimraf\": \"3.0.2\",\r\n    \"todomvc-app-css\": \"2.3.0\"\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/package.json b/package.json
+--- a/package.json	(revision 809454e523eb9df4e27c422f15beabf5bba17f39)
++++ b/package.json	(date 1668861966113)
+@@ -9,7 +9,7 @@
+     "start:ci": "npm run build && npx http-server dist --port 1234",
+     "test": "npm run test:unit && npm run test:e2e",
+     "test:unit": "npx mocha src/test/unit/**.mjs",
+-    "test:e2e": "npx mocha src/test/e2e/*.test.mjs --timeout 5000",
++    "test:e2e": "npx mocha src/test/e2e/*.test.mjs --timeout 5000 --inspect-brk",
+     "build": "npx rimraf dist .parcel-cache && npx parcel build src/app/index.html",
+     "postinstall": "browser-driver-manager install chromedriver"
+   },
+Index: .github/workflows/test.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>name: E2E Test (Selenium Webdriver)\r\n\r\non: [pull_request]\r\n\r\njobs:\r\n  e2e:\r\n    runs-on: ubuntu-latest\r\n    steps:\r\n      - uses: actions/checkout@v3\r\n      - uses: actions/setup-node@v3\r\n        with:\r\n          node-version: 19\r\n          cache: npm\r\n      - name: NPM install CI\r\n        run: npm ci\r\n      - name: Start app\r\n        run: npm run start:ci &\r\n      - name: Run test\r\n        run: npm test\r\n        env:\r\n          CI: true\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.github/workflows/test.yml b/.github/workflows/test.yml
+--- a/.github/workflows/test.yml	(revision 809454e523eb9df4e27c422f15beabf5bba17f39)
++++ b/.github/workflows/test.yml	(date 1668783372140)
+@@ -1,6 +1,7 @@
+ name: E2E Test (Selenium Webdriver)
+ 
+-on: [pull_request]
++# on: [pull_request]
++on: [release]
+ 
+ jobs:
+   e2e:
+@@ -11,11 +12,50 @@
+         with:
+           node-version: 19
+           cache: npm
++
++      - name: Clone API server from ibwgr/todomvc-server
++        uses: GuillaumeFalourd/clone-github-repo-action@v2
++        with:
++          owner: 'ibwgr'
++          repository: 'todomvc-server'
++
++      - name: Start API server
++        run: |
++          cd todomvc-server
++          npm ci
++          npm run start &
++
+       - name: NPM install CI
+         run: npm ci
+       - name: Start app
+         run: npm run start:ci &
++        env:
++          API_SERVER_URL: http://localhost:3100
+       - name: Run test
+         run: npm test
+         env:
+           CI: true
++
++
++
++#name: E2E Test (Selenium Webdriver)
++
++#on: [pull_request]
++
++#jobs:
++#  e2e:
++    #    runs-on: ubuntu-latest
++      #steps:
++      #- uses: actions/checkout@v3
++        #- uses: actions/setup-node@v3
++          #with:
++          #node-version: 19
++          #cache: npm
++        #- name: NPM install CI
++      # run: npm ci
++        #- name: Start app
++        #run: npm run start:ci &
++        #- name: Run test
++        # run: npm test
++          #env:
++          #CI: true
+Index: src/test/e2e/index.test.mjs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {until, Key} from 'selenium-webdriver'\r\nimport {describe, it, beforeEach, after} from 'mocha'\r\n\r\nimport init from './selenium.helper.mjs'\r\nconst {driver, config, assert} = init()\r\n\r\nimport Index from './index.po.mjs'\r\nconst page = new Index(driver, config.target)\r\n\r\ndescribe('Index', () => {\r\n\r\n  beforeEach(async () => {\r\n    await page.gotoIndex()\r\n  })\r\n\r\n  after(async () => {\r\n    await driver.quit()\r\n  })\r\n\r\n  xit('should show textfield', async () => {//return wert muss ein promise sein, wenn wartet, timeout 5000msec, dann fehler\r\n    await driver.wait(until.elementLocated(page.newTodoSelector()))\r\n  })\r\n\r\n  describe('Create Todo', () => {\r\n\r\n    it('should create a new item in the list', async () => {\r\n      await driver.wait(until.elementLocated(page.newTodoSelector()))\r\n      await page.newTodoField().sendKeys('shopping', Key.ENTER)\r\n\r\n      await driver.wait(until.elementLocated(page.getItemSelector(0)))\r\n      await assert.becomes(page.getItem(0).getText(), 'shopping')\r\n    })\r\n  })\r\n})\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/e2e/index.test.mjs b/src/test/e2e/index.test.mjs
+--- a/src/test/e2e/index.test.mjs	(revision 809454e523eb9df4e27c422f15beabf5bba17f39)
++++ b/src/test/e2e/index.test.mjs	(date 1668861966107)
+@@ -25,8 +25,9 @@
+ 
+     it('should create a new item in the list', async () => {
+       await driver.wait(until.elementLocated(page.newTodoSelector()))
+-      await page.newTodoField().sendKeys('shopping', Key.ENTER)
+-
++      await page.newTodoField().sendKeys('shopping')
++      await page.newTodoField().sendKeys(Key.ENTER)
++      //debugger;
+       await driver.wait(until.elementLocated(page.getItemSelector(0)))
+       await assert.becomes(page.getItem(0).getText(), 'shopping')
+     })
