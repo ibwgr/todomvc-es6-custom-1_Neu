@@ -11,3 +11,4 @@ const ctrl = new Controller(view, viewEvents, store)
 window.addEventListener('load', () => {
   ctrl.loadAndRender()
 })
+//
